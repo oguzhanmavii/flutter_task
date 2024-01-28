@@ -1,76 +1,81 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_task/controller/auth_state.dart';
-import 'package:flutter_task/controller/storage_state.dart';
+import 'package:flutter_task/service/login_service.dart';
 import 'package:flutter_task/view/home_page.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-class LoginPage extends HookConsumerWidget {
-  const LoginPage({super.key});
+
+class LoginPage extends StatefulWidget {
+  const LoginPage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final emailController = useTextEditingController();
-    final passwordController = useTextEditingController();
-    ref.listen(authErrorMessageProvider, (prev, next) {
-      if (next.isNotEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(next),
-          ),
-        );
-      } else {
-        emailController.text = '';
-        passwordController.text = '';
-      }
-    });
+  _LoginPageState createState() => _LoginPageState();
+}
 
+class _LoginPageState extends State<LoginPage> {
+  LoginService loginService = LoginService();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title:const Text('SignIn Page'),
+      ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+        padding: const EdgeInsets.all(20.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const SizedBox(
-              height: 200,
-            ),
-            TextField(
+            TextFormField(
               controller: emailController,
-              decoration: const InputDecoration(
-                helperText: 'Email',
+              decoration: InputDecoration(
+                hintText: 'Email',
               ),
             ),
-            const SizedBox(
-              height: 10,
-            ),
-            TextField(
-              controller: passwordController,
+            SizedBox(height: 20,),
+            TextFormField(
               obscureText: true,
-              decoration: const InputDecoration(
-                helperText: 'Password',
+              controller: passwordController,
+              decoration: InputDecoration( 
+                hintText: 'Password',
               ),
             ),
-            const SizedBox(
-              height: 10,
-            ),
-            TextButton(
+            SizedBox(height: 40,),
+            ElevatedButton(
               onPressed: () async {
-                if (emailController.text.isNotEmpty &&
-                    passwordController.text.isNotEmpty) {
-                  final authArgs = AuthArgs(
-                    email: emailController.text,
-                    password: passwordController.text,
+                // Call the login function and wait for its result
+                bool success = await loginService.login(
+                  emailController.text.toString(),
+                  passwordController.text.toString(),
+                );
+
+                if (success) {
+                  // Navigate to HomePage on successful login
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const HomePage()),
                   );
-                  ref.read(authLoginProvider(authArgs));
-                  final isAuthenticated = ref.read(getIsAuthenticatedProvider);
-                  if (isAuthenticated.value!) {
-                   Navigator.push(context,MaterialPageRoute(builder:(context)=>const HomePage()));
-                  }
+                } else {
+                  // Handle unsuccessful login
+                  // For example, show an error message
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Login failed. Please check your credentials.'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
                 }
               },
-              child: const Text(
-                'Login',
-                style: TextStyle(fontSize: 18),
+              child: Container(
+                height: 50,
+                decoration: BoxDecoration(
+                  color: Colors.blue,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Center(child: Text('Login')),
               ),
-            ),
+            )
           ],
         ),
       ),

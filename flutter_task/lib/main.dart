@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_task/view/home_page.dart';
 import 'package:flutter_task/view/login_page.dart';
 void main() {
   runApp(const ProviderScope(child: MyApp()));
@@ -14,9 +13,9 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
-         primarySwatch: Colors.purple,
+         primarySwatch: Colors.blue,
       ),
-      home: const HomePage(),
+      home: const LoginPage(),
     );
   }
 }
