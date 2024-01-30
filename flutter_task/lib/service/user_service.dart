@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_task/model/user_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UserService {
   String userUrl = 'https://reqres.in/api/users?page=2';
@@ -15,5 +16,19 @@ class UserService {
       throw Exception(response.reasonPhrase);
     }
   }
+  Future<void> saveUser(UserModel user) async{
+   final prefs= await SharedPreferences.getInstance();
+   final List<String> savedUsers=prefs.getStringList('saved_users')?? [];
+   savedUsers.add(json.encode(user.toJson()));
+   await prefs.setStringList('saved_users', savedUsers);
+   user.isSaved = true;
+  }
+
+   Future<List<UserModel>> loadSavedUsers() async {
+    final prefs = await SharedPreferences.getInstance();
+    final List<String> savedUsersJson = prefs.getStringList('saved_users') ?? [];
+    return savedUsersJson.map((savedUserJson) => UserModel.fromJson(json.decode(savedUserJson))).toList();
+  }
+  
 }
 final userController=Provider<UserService>((ref)=>UserService());

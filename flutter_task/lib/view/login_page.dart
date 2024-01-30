@@ -19,64 +19,87 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title:const Text('SignIn Page'),
+        title: const Text('Sign In Page'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextFormField(
-              controller: emailController,
-              decoration: InputDecoration(
-                hintText: 'Email',
-              ),
-            ),
-            SizedBox(height: 20,),
-            TextFormField(
-              obscureText: true,
-              controller: passwordController,
-              decoration: InputDecoration( 
-                hintText: 'Password',
-              ),
-            ),
-            SizedBox(height: 40,),
-            ElevatedButton(
-              onPressed: () async {
-                // Call the login function and wait for its result
-                bool success = await loginService.login(
-                  emailController.text.toString(),
-                  passwordController.text.toString(),
-                );
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              SizedBox(height: 100),
+              _buildHeaderImage(),
+              SizedBox(height: 20),
+              _buildTextField("Email", Icons.email, emailController),
+              SizedBox(height: 20),
+              _buildTextField("Password", Icons.lock, passwordController, isPassword: true),
+              SizedBox(height: 40),
+              _buildLoginButton(),
+              SizedBox(height: 100), // A little extra space at the bottom
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
-                if (success) {
-                  // Navigate to HomePage on successful login
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const HomePage()),
-                  );
-                } else {
-                  // Handle unsuccessful login
-                  // For example, show an error message
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Login failed. Please check your credentials.'),
-                      backgroundColor: Colors.red,
-                    ),
-                  );
-                }
-              },
-              child: Container(
-                height: 50,
-                decoration: BoxDecoration(
-                  color: Colors.blue,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Center(child: Text('Login')),
-              ),
-            )
-          ],
+  Widget _buildHeaderImage() {
+    return Image.asset(
+      'assets/reqres.png',
+      height: 150,
+      width: 150,
+      fit: BoxFit.contain,
+    );
+  }
+
+  Widget _buildTextField(String hintText, IconData icon, TextEditingController controller, {bool isPassword = false}) {
+    return TextFormField(
+      controller: controller,
+      obscureText: isPassword,
+      decoration: InputDecoration(
+        labelText: hintText,
+        prefixIcon: Icon(icon),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLoginButton() {
+    return ElevatedButton(
+      onPressed: () async {
+        bool success = await loginService.login(
+          emailController.text.toString(),
+          passwordController.text.toString(),
+        );
+
+        if (success) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => HomePage()),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Login failed. Please check your credentials.'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      },
+      style: ElevatedButton.styleFrom(
+        primary: Colors.orange,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 15),
+        child: Text(
+          'Login',
+          style: TextStyle(fontSize: 18),
         ),
       ),
     );
