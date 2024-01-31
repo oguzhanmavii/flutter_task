@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_task/model/user_model.dart';
+import 'package:flutter_task/view/profile_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../controller/user_controller.dart';
 
@@ -64,6 +65,9 @@ class HomePage extends ConsumerWidget {
                     DefaultTabController.of(context).animateTo(1);
                   },
                 ),
+                onTap:(){
+                  Navigator.push(context,MaterialPageRoute(builder:(context)=>ProfilePage(user: user)));
+                },
               );
             },
           );
@@ -83,7 +87,7 @@ class HomePage extends ConsumerWidget {
       } else {
         List<UserModel> savedUsers = snapshot.data ?? [];
         return savedUsers.isEmpty
-            ? Center(
+            ?const Center(
                 child: Text('No saved users.'),
               )
             : ListView.builder(

@@ -19,7 +19,7 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text('Sign In Page'),
+        title: const Text('Sign in'),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -28,15 +28,15 @@ class _LoginPageState extends State<LoginPage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              SizedBox(height: 100),
+            const  SizedBox(height: 100),
               _buildHeaderImage(),
-              SizedBox(height: 20),
+            const  SizedBox(height: 20),
               _buildTextField("Email", Icons.email, emailController),
-              SizedBox(height: 20),
+            const  SizedBox(height: 20),
               _buildTextField("Password", Icons.lock, passwordController, isPassword: true),
-              SizedBox(height: 40),
+            const  SizedBox(height: 40),
               _buildLoginButton(),
-              SizedBox(height: 100), // A little extra space at the bottom
+            const  SizedBox(height: 100), // A little extra space at the bottom
             ],
           ),
         ),
@@ -81,8 +81,8 @@ class _LoginPageState extends State<LoginPage> {
             MaterialPageRoute(builder: (context) => HomePage()),
           );
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
               content: Text('Login failed. Please check your credentials.'),
               backgroundColor: Colors.red,
             ),
@@ -95,9 +95,9 @@ class _LoginPageState extends State<LoginPage> {
           borderRadius: BorderRadius.circular(10),
         ),
       ),
-      child: Padding(
+      child:const Padding(
         padding: const EdgeInsets.symmetric(vertical: 15),
-        child: Text(
+        child:  Text(
           'Login',
           style: TextStyle(fontSize: 18),
         ),
